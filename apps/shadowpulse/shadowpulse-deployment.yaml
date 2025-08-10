@@ -1,20 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sdr
+  name: shadowpulse
   labels:
-    app: sdr
+    app: shadowpulse
+    app.watchgrid.io/name: shadowpulse
+    app.watchgrid.io/managed-by: watchgrid
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sdr
+      app: shadowpulse
+      app.watchgrid.io/name: shadowpulse
   template:
     metadata:
       labels:
-        app: sdr
+        app: shadowpulse
+        app.watchgrid.io/name: shadowpulse
+        app.watchgrid.io/managed-by: watchgrid
     spec:
       containers:
+        # SDR Backend Container
         - name: sdr
           image: graafnet/shadowpulse-sdr:latest
           imagePullPolicy: Always
@@ -26,14 +32,8 @@ spec:
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
-                #- name: SDR_DEVICE
-                #value: rtlsdr
-                #- name: RTLSDR_ARGS
-                #value: rtl=0
             - name: SDR_DEVICE
               value: hackrf
-            # - name: SDR_DEVICE
-            #   value: dummy
           readinessProbe:
             httpGet:
               path: /health
@@ -51,8 +51,30 @@ spec:
           volumeMounts:
             - name: usbdev
               mountPath: /dev/bus/usb
+        # Frontend Container
+        - name: frontend
+          image: graafnet/shadowpulse-frontend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: http-frontend
+          env:
+            - name: BACKEND_URL
+              value: http://localhost:8000
+            - name: WS_URL
+              value: ws://localhost:8000/ws
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
       volumes:
         - name: usbdev
           hostPath:
             path: /dev/bus/usb
             type: Directory
+        - name: nginx-config
+          configMap:
+            name: shadowpulse-nginx-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf

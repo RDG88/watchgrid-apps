@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shadowpulse
+  labels:
+    app: shadowpulse
+    app.watchgrid.io/name: shadowpulse
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  selector:
+    app: shadowpulse
+    app.watchgrid.io/name: shadowpulse
+  ports:
+    - name: frontend
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+    - name: backend
+      port: 8000
+      targetPort: 8000
+      nodePort: 30800
+    - name: fft
+      port: 5556
+      targetPort: 5556
+      nodePort: 30556
+  type: NodePort
