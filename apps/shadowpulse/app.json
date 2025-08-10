@@ -1,0 +1,19 @@
+{
+  "name": "shadowpulse",
+  "description": "SDR (Software Defined Radio) monitoring application with real-time spectrum analysis and web interface for detecting and analyzing radio frequency signals",
+  "version": "1.0.0",
+  "namespace": "default",
+  "author": "WATCHGRID Team",
+  "tags": ["sdr", "radio", "spectrum", "monitoring"],
+  "requirements": {
+    "usb": "RTL-SDR dongle required for full functionality",
+    "privileged": true
+  },
+  "ports": {
+    "frontend": 80,
+    "backend": 8000,
+    "fft": 5555,
+    "peak": 5556
+  },
+  "notes": "This application requires a connected RTL-SDR USB device for radio spectrum analysis. The frontend provides a web interface for viewing spectrum data."
+}
