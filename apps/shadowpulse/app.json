@@ -6,7 +6,7 @@
   "author": "WATCHGRID Team",
   "tags": ["sdr", "radio", "spectrum", "monitoring"],
   "requirements": {
-    "usb": "RTL-SDR dongle required for full functionality",
+    "usb": "RTL-SDR/HackRF required for full functionality",
     "privileged": true
   },
   "ports": {
