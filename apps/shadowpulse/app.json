@@ -15,5 +15,5 @@
     "fft": 5555,
     "peak": 5556
   },
-  "notes": "This application requires a connected RTL-SDR USB device for radio spectrum analysis. The frontend provides a web interface for viewing spectrum data."
+  "notes": "This application requires a connected HackRF/RTL-SDR USB device for radio spectrum analysis. The frontend provides a web interface for viewing spectrum data."
 }
