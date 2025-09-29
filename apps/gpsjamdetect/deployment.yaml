@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpsjamdetect-detector
+  labels:
+    app: gpsjamdetect-detector
+    app.watchgrid.io/name: gpsjamdetect
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gpsjamdetect-detector
+  template:
+    metadata:
+      labels:
+        app: gpsjamdetect-detector
+        app.watchgrid.io/name: gpsjamdetect
+        app.watchgrid.io/managed-by: watchgrid
+    spec:
+      containers:
+        - name: detector
+          image: graafnet/gpsjamdetect-detector:latest
+          env:
+            - name: GPSD_HOST
+              value: "localhost"
+            - name: GPSD_PORT
+              value: "2947"
+            - name: GPS_SIMULATION
+              value: "false"
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gpsjamdetect-detector
+  labels:
+    app: gpsjamdetect-detector
+    app.watchgrid.io/name: gpsjamdetect
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  selector:
+    app: gpsjamdetect-detector
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+  type: ClusterIP
