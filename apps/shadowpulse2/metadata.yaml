@@ -1,0 +1,12 @@
+name: "Shadowpulse SDR Suite"
+description: "Software-defined radio demo with SDR backend, management API, and dual web frontends."
+version: "0.1.0"
+author: "Watchgrid System"
+tags:
+  - "sdr"
+  - "demo"
+  - "web"
+icon: "📡"
+min_replicas: 1
+max_replicas: 3
+default_replicas: 1

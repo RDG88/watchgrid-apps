@@ -1,0 +1,161 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shadowpulse2-sdr
+  labels:
+    app: shadowpulse2-sdr
+    app.watchgrid.io/name: shadowpulse2
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shadowpulse2-sdr
+  template:
+    metadata:
+      labels:
+        app: shadowpulse2-sdr
+        app.watchgrid.io/name: shadowpulse2
+        app.watchgrid.io/managed-by: watchgrid
+    spec:
+      containers:
+        - name: sdr
+          image: colabspecl/sdpsdr:latest
+          ports:
+            - containerPort: 5556
+            - containerPort: 8000
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: SDR_DEVICE
+              value: cwsim
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: usb-devices
+              mountPath: /dev/bus/usb
+      volumes:
+        - name: usb-devices
+          hostPath:
+            path: /dev/bus/usb
+            type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shadowpulse2-sdr
+  labels:
+    app: shadowpulse2-sdr
+    app.watchgrid.io/name: shadowpulse2
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  selector:
+    app: shadowpulse2-sdr
+  ports:
+    - name: backend
+      port: 8000
+      targetPort: 8000
+      protocol: TCP
+    - name: fft
+      port: 5556
+      targetPort: 5556
+      protocol: TCP
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shadowpulse2-frontend
+  labels:
+    app: shadowpulse2-frontend
+    app.watchgrid.io/name: shadowpulse2
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shadowpulse2-frontend
+  template:
+    metadata:
+      labels:
+        app: shadowpulse2-frontend
+        app.watchgrid.io/name: shadowpulse2
+        app.watchgrid.io/managed-by: watchgrid
+    spec:
+      containers:
+        - name: frontend
+          image: colabspecl/sdpfrontend:latest
+          ports:
+            - containerPort: 5173
+          env:
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            - name: VITE_BACKEND_URL
+              value: http://shadowpulse2-sdr:8000
+            - name: VITE_WEBSOCKET_URL
+              value: ws://shadowpulse2-sdr:8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shadowpulse2-frontend
+  labels:
+    app: shadowpulse2-frontend
+    app.watchgrid.io/name: shadowpulse2
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  selector:
+    app: shadowpulse2-frontend
+  ports:
+    - name: http
+      port: 5173
+      targetPort: 5173
+      protocol: TCP
+  type: ClusterIP
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: shadowpulse2-management
+#   labels:
+#     app: shadowpulse2-management
+#     app.watchgrid.io/name: shadowpulse2
+#     app.watchgrid.io/managed-by: watchgrid
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: shadowpulse2-management
+#   template:
+#     metadata:
+#       labels:
+#         app: shadowpulse2-management
+#         app.watchgrid.io/name: shadowpulse2
+#         app.watchgrid.io/managed-by: watchgrid
+#     spec:
+#       containers:
+#         - name: management
+#           image: colabspecl/sdpmgmt:latest
+#           ports:
+#             - containerPort: 5174
+#           env:
+#             - name: PYTHONUNBUFFERED
+#               value: "1"
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: shadowpulse2-management
+#   labels:
+#     app: shadowpulse2-management
+#     app.watchgrid.io/name: shadowpulse2
+#     app.watchgrid.io/managed-by: watchgrid
+# spec:
+#   selector:
+#     app: shadowpulse2-management
+#   ports:
+#     - name: http
+#       port: 5174
+#       targetPort: 5174
+#       protocol: TCP
+#   type: ClusterIP
