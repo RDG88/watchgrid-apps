@@ -28,17 +28,24 @@ spec:
             - name: PYTHONUNBUFFERED
               value: "1"
             - name: SDR_DEVICE
-              value: cwsim
+              value: hackrf
+            - name: CONFIG_PATH
+              value: "/app/config/config.json"
           securityContext:
             privileged: true
           volumeMounts:
             - name: usb-devices
               mountPath: /dev/bus/usb
+            - name: config-storage
+              mountPath: /app/config
       volumes:
         - name: usb-devices
           hostPath:
             path: /dev/bus/usb
             type: Directory
+        - name: config-storage
+          persistentVolumeClaim:
+            claimName: sdr-config-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -159,3 +166,15 @@ spec:
 #       targetPort: 5174
 #       protocol: TCP
 #   type: ClusterIP
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sdr-config-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Mi
+  storageClassName: local-path
