@@ -33,6 +33,8 @@ spec:
           env:
             - name: PYTHONUNBUFFERED
               value: "1"
+            - name: CONFIG_PATH
+              value: /app/config/config.json
                 #- name: SDR_DEVICE
                 #value: rtlsdr
                 #- name: RTLSDR_ARGS
@@ -56,9 +58,14 @@ spec:
           securityContext:
             privileged: true
           volumeMounts:
+            - name: config-storage
+              mountPath: /app/config
             - name: usbdev
               mountPath: /dev/bus/usb
       volumes:
+        - name: config-storage
+          persistentVolumeClaim:
+            claimName: sdr-config-pvc
         - name: usbdev
           hostPath:
             path: /dev/bus/usb
