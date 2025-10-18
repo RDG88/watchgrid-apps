@@ -1,4 +1,16 @@
 apiVersion: v1
+kind: Secret
+metadata:
+  name: nzyme-tap-secret
+  labels:
+    app: nzyme-tap
+    app.watchgrid.io/name: nzyme-tap
+    app.watchgrid.io/managed-by: watchgrid
+type: Opaque
+stringData:
+  tap-secret-key: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nzyme-tap-config
@@ -100,6 +112,11 @@ spec:
               value: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
             - name: LEADER_URL
               value: "https://10.10.1.10:22900"
+            - name: TAP_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nzyme-tap-secret
+                  key: tap-secret-key
             - name: PERFORMANCE_ETHERNET_BROKERS
               value: "1"
             - name: PERFORMANCE_WIFI_BROKERS
