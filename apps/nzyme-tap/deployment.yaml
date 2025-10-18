@@ -108,6 +108,8 @@ spec:
           env:
             - name: ACCEPT_INSECURE_CERTS
               value: "true"
+            - name: LOG_LEVEL
+              value: "INFO"
             - name: LEADER_SECRET
               value: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
             - name: LEADER_URL
