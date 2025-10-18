@@ -91,7 +91,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: nzyme-tap
-          image: randomguyoninternet/nzyme-tap:v2a17
+          image: graafnet/nzyme-tap:v2a17
           imagePullPolicy: Always
           env:
             - name: ACCEPT_INSECURE_CERTS
