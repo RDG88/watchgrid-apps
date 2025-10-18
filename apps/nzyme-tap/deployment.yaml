@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nzyme-tap-config
+  labels:
+    app: nzyme-tap
+    app.watchgrid.io/name: nzyme-tap
+    app.watchgrid.io/managed-by: watchgrid
+data:
+  nzyme-tap.conf.template: |
+    [general]
+    leader_secret = "${LEADER_SECRET}"
+    leader_uri = "${LEADER_URL}"
+    accept_insecure_certs = ${ACCEPT_INSECURE_CERTS}
+
+    [performance]
+    ethernet_brokers = ${PERFORMANCE_ETHERNET_BROKERS}
+    wifi_brokers = ${PERFORMANCE_WIFI_BROKERS}
+    wifi_broker_buffer_capacity = ${PERFORMANCE_WIFI_BROKER_BUFFER_CAPACITY}
+    ethernet_broker_buffer_capacity = ${PERFORMANCE_ETHERNET_BROKER_BUFFER_CAPACITY}
+    bluetooth_devices_pipeline_size = ${PERFORMANCE_BLUETOOTH_DEVICES_PIPELINE_SIZE}
+    shared_protocol_processors = ${PERFORMANCE_SHARED_PROTOCOL_PROCESSORS}
+
+    [protocols.wifi]
+    pipeline_size = ${PROTOCOLS_WIFI_PIPELINE_SIZE}
+    processors = ${PROTOCOLS_WIFI_PROCESSORS}
+
+    [protocols.tcp]
+    pipeline_size = ${PROTOCOLS_TCP_PIPELINE_SIZE}
+    processors = ${PROTOCOLS_TCP_PROCESSORS}
+    reassembly_buffer_size = ${PROTOCOLS_TCP_REASSEMBLY_BUFFER_SIZE}
+    session_timeout_seconds = ${PROTOCOLS_TCP_SESSION_TIMEOUT_SECONDS}
+
+    [protocols.udp]
+    pipeline_size = ${PROTOCOLS_UDP_PIPELINE_SIZE}
+    processors = ${PROTOCOLS_UDP_PROCESSORS}
+
+    [protocols.dns]
+    pipeline_size = ${PROTOCOLS_DNS_PIPELINE_SIZE}
+    entropy_zscore_threshold = ${PROTOCOLS_DNS_ENTROPY_ZSCORE_THRESHOLD}
+
+    [protocols.ssh]
+    pipeline_size = ${PROTOCOLS_SSH_PIPELINE_SIZE}
+
+    [protocols.socks]
+    pipeline_size = ${PROTOCOLS_SOCKS_PIPELINE_SIZE}
+
+    [protocols.arp]
+    pipeline_size = ${PROTOCOLS_ARP_PIPELINE_SIZE}
+
+    [protocols.dhcpv4]
+    pipeline_size = ${PROTOCOLS_DHCPV4_PIPELINE_SIZE}
+
+    [protocols.uav_remote_id]
+    pipeline_size = ${PROTOCOLS_UAV_REMOTE_ID_PIPELINE_SIZE}
+
+    [misc]
+    training_period_minutes = ${MISC_TRAINING_PERIOD_MINUTES}
+    context_mac_ip_retention_hours = ${MISC_CONTEXT_MAC_IP_RETENTION_HOURS}
+    context_mac_hostname_retention_hours = ${MISC_CONTEXT_MAC_HOSTNAME_RETENTION_HOURS}
+
+  nzyme-tap-adapter: |
+    # Replace with the output from generate_tap_conf.sh for your adapters.
+    [wifi_interfaces.wlan1]
+    active = true
+    channels_2g = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    channels_5g = [36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 149, 153, 157, 161, 165]
+    channels_6g = []
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nzyme-tap
+  labels:
+    app: nzyme-tap
+    app.watchgrid.io/name: nzyme-tap
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nzyme-tap
+  template:
+    metadata:
+      labels:
+        app: nzyme-tap
+        app.watchgrid.io/name: nzyme-tap
+        app.watchgrid.io/managed-by: watchgrid
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: nzyme-tap
+          image: randomguyoninternet/nzyme-tap:v2a17
+          imagePullPolicy: Always
+          env:
+            - name: ACCEPT_INSECURE_CERTS
+              value: "true"
+            - name: LEADER_SECRET
+              value: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
+            - name: LEADER_URL
+              value: "https://10.10.1.10:22900"
+            - name: PERFORMANCE_ETHERNET_BROKERS
+              value: "1"
+            - name: PERFORMANCE_WIFI_BROKERS
+              value: "1"
+            - name: PERFORMANCE_WIFI_BROKER_BUFFER_CAPACITY
+              value: "65535"
+            - name: PERFORMANCE_ETHERNET_BROKER_BUFFER_CAPACITY
+              value: "65535"
+            - name: PERFORMANCE_BLUETOOTH_DEVICES_PIPELINE_SIZE
+              value: "1024"
+            - name: PERFORMANCE_SHARED_PROTOCOL_PROCESSORS
+              value: "2"
+            - name: PROTOCOLS_WIFI_PIPELINE_SIZE
+              value: "16384"
+            - name: PROTOCOLS_WIFI_PROCESSORS
+              value: "1"
+            - name: PROTOCOLS_TCP_PIPELINE_SIZE
+              value: "65535"
+            - name: PROTOCOLS_TCP_PROCESSORS
+              value: "3"
+            - name: PROTOCOLS_TCP_REASSEMBLY_BUFFER_SIZE
+              value: "1048576"
+            - name: PROTOCOLS_TCP_SESSION_TIMEOUT_SECONDS
+              value: "43200"
+            - name: PROTOCOLS_UDP_PIPELINE_SIZE
+              value: "65535"
+            - name: PROTOCOLS_UDP_PROCESSORS
+              value: "3"
+            - name: PROTOCOLS_DNS_PIPELINE_SIZE
+              value: "4096"
+            - name: PROTOCOLS_DNS_ENTROPY_ZSCORE_THRESHOLD
+              value: "3.0"
+            - name: PROTOCOLS_SSH_PIPELINE_SIZE
+              value: "1024"
+            - name: PROTOCOLS_SOCKS_PIPELINE_SIZE
+              value: "1024"
+            - name: PROTOCOLS_ARP_PIPELINE_SIZE
+              value: "1024"
+            - name: PROTOCOLS_DHCPV4_PIPELINE_SIZE
+              value: "1024"
+            - name: PROTOCOLS_UAV_REMOTE_ID_PIPELINE_SIZE
+              value: "1024"
+            - name: MISC_TRAINING_PERIOD_MINUTES
+              value: "5"
+            - name: MISC_CONTEXT_MAC_IP_RETENTION_HOURS
+              value: "36"
+            - name: MISC_CONTEXT_MAC_HOSTNAME_RETENTION_HOURS
+              value: "36"
+          securityContext:
+            privileged: false
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+          volumeMounts:
+            - name: nzyme-tap-config
+              mountPath: /etc/nzyme/nzyme-tap-config/nzyme-tap-adapter
+              subPath: nzyme-tap-adapter
+            - name: nzyme-tap-config
+              mountPath: /etc/nzyme/nzyme-tap.conf.template
+              subPath: nzyme-tap.conf.template
+      volumes:
+        - name: nzyme-tap-config
+          configMap:
+            name: nzyme-tap-config
