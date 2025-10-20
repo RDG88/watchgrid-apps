@@ -1,0 +1,45 @@
+{
+  "name": "Nzyme Tap",
+  "description": "Deploy the Nzyme tap collector to feed data into an existing Nzyme leader.",
+  "version": "v2a17",
+  "namespace": "default",
+  "author": "Watchgrid System",
+  "tags": ["nzyme", "tap", "wireless", "monitoring"],
+  "config_fields": [
+    {
+      "name": "tap-secret-key",
+      "type": "secret",
+      "description": "Secret key for authenticating this tap with the Nzyme leader",
+      "default": "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI",
+      "required": true
+    },
+    {
+      "name": "LEADER_URL",
+      "type": "string",
+      "description": "URL of the Nzyme leader (e.g., https://10.10.1.10:22900)",
+      "default": "https://10.10.1.10:22900",
+      "required": true
+    },
+    {
+      "name": "LEADER_SECRET",
+      "type": "secret",
+      "description": "Leader secret for authentication",
+      "default": "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI",
+      "required": true
+    },
+    {
+      "name": "ACCEPT_INSECURE_CERTS",
+      "type": "boolean",
+      "description": "Accept insecure TLS certificates",
+      "default": "true",
+      "required": false
+    },
+    {
+      "name": "LOG_LEVEL",
+      "type": "string",
+      "description": "Logging level (INFO, DEBUG, WARN, ERROR)",
+      "default": "INFO",
+      "required": false
+    }
+  ]
+}
