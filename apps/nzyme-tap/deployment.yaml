@@ -21,55 +21,55 @@ metadata:
 data:
   nzyme-tap.conf.template: |
     [general]
-    leader_secret = "${LEADER_SECRET}"
-    leader_uri = "${LEADER_URL}"
-    accept_insecure_certs = ${ACCEPT_INSECURE_CERTS}
+    leader_secret = "$LEADER_SECRET"
+    leader_uri = "$LEADER_URL"
+    accept_insecure_certs = $ACCEPT_INSECURE_CERTS
 
     [performance]
-    ethernet_brokers = ${PERFORMANCE_ETHERNET_BROKERS}
-    wifi_brokers = ${PERFORMANCE_WIFI_BROKERS}
-    wifi_broker_buffer_capacity = ${PERFORMANCE_WIFI_BROKER_BUFFER_CAPACITY}
-    ethernet_broker_buffer_capacity = ${PERFORMANCE_ETHERNET_BROKER_BUFFER_CAPACITY}
-    bluetooth_devices_pipeline_size = ${PERFORMANCE_BLUETOOTH_DEVICES_PIPELINE_SIZE}
-    shared_protocol_processors = ${PERFORMANCE_SHARED_PROTOCOL_PROCESSORS}
+    ethernet_brokers = $PERFORMANCE_ETHERNET_BROKERS
+    wifi_brokers = $PERFORMANCE_WIFI_BROKERS
+    wifi_broker_buffer_capacity = $PERFORMANCE_WIFI_BROKER_BUFFER_CAPACITY
+    ethernet_broker_buffer_capacity = $PERFORMANCE_ETHERNET_BROKER_BUFFER_CAPACITY
+    bluetooth_devices_pipeline_size = $PERFORMANCE_BLUETOOTH_DEVICES_PIPELINE_SIZE
+    shared_protocol_processors = $PERFORMANCE_SHARED_PROTOCOL_PROCESSORS
 
     [protocols.wifi]
-    pipeline_size = ${PROTOCOLS_WIFI_PIPELINE_SIZE}
-    processors = ${PROTOCOLS_WIFI_PROCESSORS}
+    pipeline_size = $PROTOCOLS_WIFI_PIPELINE_SIZE
+    processors = $PROTOCOLS_WIFI_PROCESSORS
 
     [protocols.tcp]
-    pipeline_size = ${PROTOCOLS_TCP_PIPELINE_SIZE}
-    processors = ${PROTOCOLS_TCP_PROCESSORS}
-    reassembly_buffer_size = ${PROTOCOLS_TCP_REASSEMBLY_BUFFER_SIZE}
-    session_timeout_seconds = ${PROTOCOLS_TCP_SESSION_TIMEOUT_SECONDS}
+    pipeline_size = $PROTOCOLS_TCP_PIPELINE_SIZE
+    processors = $PROTOCOLS_TCP_PROCESSORS
+    reassembly_buffer_size = $PROTOCOLS_TCP_REASSEMBLY_BUFFER_SIZE
+    session_timeout_seconds = $PROTOCOLS_TCP_SESSION_TIMEOUT_SECONDS
 
     [protocols.udp]
-    pipeline_size = ${PROTOCOLS_UDP_PIPELINE_SIZE}
-    processors = ${PROTOCOLS_UDP_PROCESSORS}
+    pipeline_size = $PROTOCOLS_UDP_PIPELINE_SIZE
+    processors = $PROTOCOLS_UDP_PROCESSORS
 
     [protocols.dns]
-    pipeline_size = ${PROTOCOLS_DNS_PIPELINE_SIZE}
-    entropy_zscore_threshold = ${PROTOCOLS_DNS_ENTROPY_ZSCORE_THRESHOLD}
+    pipeline_size = $PROTOCOLS_DNS_PIPELINE_SIZE
+    entropy_zscore_threshold = $PROTOCOLS_DNS_ENTROPY_ZSCORE_THRESHOLD
 
     [protocols.ssh]
-    pipeline_size = ${PROTOCOLS_SSH_PIPELINE_SIZE}
+    pipeline_size = $PROTOCOLS_SSH_PIPELINE_SIZE
 
     [protocols.socks]
-    pipeline_size = ${PROTOCOLS_SOCKS_PIPELINE_SIZE}
+    pipeline_size = $PROTOCOLS_SOCKS_PIPELINE_SIZE
 
     [protocols.arp]
-    pipeline_size = ${PROTOCOLS_ARP_PIPELINE_SIZE}
+    pipeline_size = $PROTOCOLS_ARP_PIPELINE_SIZE
 
     [protocols.dhcpv4]
-    pipeline_size = ${PROTOCOLS_DHCPV4_PIPELINE_SIZE}
+    pipeline_size = $PROTOCOLS_DHCPV4_PIPELINE_SIZE
 
     [protocols.uav_remote_id]
-    pipeline_size = ${PROTOCOLS_UAV_REMOTE_ID_PIPELINE_SIZE}
+    pipeline_size = $PROTOCOLS_UAV_REMOTE_ID_PIPELINE_SIZE
 
     [misc]
-    training_period_minutes = ${MISC_TRAINING_PERIOD_MINUTES}
-    context_mac_ip_retention_hours = ${MISC_CONTEXT_MAC_IP_RETENTION_HOURS}
-    context_mac_hostname_retention_hours = ${MISC_CONTEXT_MAC_HOSTNAME_RETENTION_HOURS}
+    training_period_minutes = $MISC_TRAINING_PERIOD_MINUTES
+    context_mac_ip_retention_hours = $MISC_CONTEXT_MAC_IP_RETENTION_HOURS
+    context_mac_hostname_retention_hours = $MISC_CONTEXT_MAC_HOSTNAME_RETENTION_HOURS
 
     [wifi_interfaces.wlan1]
     active = true
