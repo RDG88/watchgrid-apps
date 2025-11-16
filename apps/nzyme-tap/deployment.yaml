@@ -176,6 +176,8 @@ spec:
               value: "36"
             - name: MISC_CONTEXT_MAC_HOSTNAME_RETENTION_HOURS
               value: "36"
+            - name: LOG_LEVEL
+              value: "INFO"
           securityContext:
             privileged: false
             capabilities:
