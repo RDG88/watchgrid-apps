@@ -71,13 +71,13 @@ data:
     context_mac_ip_retention_hours = ${MISC_CONTEXT_MAC_IP_RETENTION_HOURS}
     context_mac_hostname_retention_hours = ${MISC_CONTEXT_MAC_HOSTNAME_RETENTION_HOURS}
 
+  nzyme-tap-adapter: |
     # Replace with the output from generate_tap_conf.sh for your adapters.
     [wifi_interfaces.wlan1]
     active = true
     channels_2g = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
     channels_5g = [36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 149, 153, 157, 161, 165]
     channels_6g = []
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -100,25 +100,34 @@ spec:
         app.watchgrid.io/managed-by: watchgrid
     spec:
       hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - ${WATCHGRID_DNS_SERVER}  # WireGuard gateway DNS (injected by Watchgrid)
+        searches:
+          - wg
+          - default.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+        options:
+          - name: ndots
+            value: "2"
       containers:
         - name: nzyme-tap
           image: graafnet/nzyme-tap:v2a17
           imagePullPolicy: Always
           env:
-            - name: ACCEPT_INSECURE_CERTS
-              value: "true"
-            - name: LOG_LEVEL
-              value: "INFO"
-            - name: LEADER_SECRET
-              value: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
-            - name: LEADER_URL
-              value: "https://10.10.1.10:22900"
             - name: TAP_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: nzyme-tap-secret
                   key: tap-secret-key
+            - name: ACCEPT_INSECURE_CERTS
+              value: "true"
+            - name: LEADER_SECRET
+              value: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
+            - name: LEADER_URL
+              value: "https://10.10.1.10:22900"
             - name: PERFORMANCE_ETHERNET_BROKERS
               value: "1"
             - name: PERFORMANCE_WIFI_BROKERS
