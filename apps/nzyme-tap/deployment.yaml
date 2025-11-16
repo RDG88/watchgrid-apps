@@ -125,9 +125,9 @@ spec:
             - name: ACCEPT_INSECURE_CERTS
               value: "true"
             - name: LEADER_SECRET
-              value: "qxMwyhZTvgFlyvjS01qVNQpiLIWC4FFhmgHO2jia4MSd40JCypMmagHIuc5gQ3dI"
+              value: "${LEADER_SECRET}"
             - name: LEADER_URL
-              value: "https://10.10.1.10:22900"
+              value: "https://nzyme-service.wg:22900"
             - name: PERFORMANCE_ETHERNET_BROKERS
               value: "1"
             - name: PERFORMANCE_WIFI_BROKERS
