@@ -1,4 +1,9 @@
-data/
+# Don't ignore data directory structure
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/captures/
+data/recordings/
 *.pyc
 __pycache__/
 .env
