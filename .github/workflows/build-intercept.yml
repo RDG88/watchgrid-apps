@@ -30,13 +30,23 @@ jobs:
 
       - name: Clone intercept source
         run: |
+          # Save our custom data directory
+          cp -r apps/intercept/data /tmp/intercept-data-backup || true
+          
+          # Clone upstream source
           git clone --depth 1 https://github.com/smittix/intercept.git /tmp/intercept
           # Remove .git to avoid conflicts
           rm -rf /tmp/intercept/.git
           # Copy all files including hidden ones
           cp -r /tmp/intercept/. apps/intercept/
+          
+          # Restore our custom data directory (overwrites upstream)
+          if [ -d /tmp/intercept-data-backup ]; then
+            cp -r /tmp/intercept-data-backup apps/intercept/data
+          fi
+          
           ls -la apps/intercept/
-          # Verify data directory exists
+          # Verify data directory exists with our custom files
           ls -la apps/intercept/data/ || echo "Warning: data directory not found"
 
       - name: Log in to the Container registry
