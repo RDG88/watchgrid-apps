@@ -31,8 +31,13 @@ jobs:
       - name: Clone intercept source
         run: |
           git clone --depth 1 https://github.com/smittix/intercept.git /tmp/intercept
-          cp -r /tmp/intercept/* apps/intercept/
+          # Remove .git to avoid conflicts
+          rm -rf /tmp/intercept/.git
+          # Copy all files including hidden ones
+          cp -r /tmp/intercept/. apps/intercept/
           ls -la apps/intercept/
+          # Verify data directory exists
+          ls -la apps/intercept/data/ || echo "Warning: data directory not found"
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
