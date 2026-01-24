@@ -21,7 +21,7 @@ spec:
       hostNetwork: true
       containers:
         - name: intercept
-          image: ghcr.io/rdg88/intercept:latest
+          image: ghcr.io/rdg88/intercept@sha256:b475ec6f8f1d3345535b03f2c32e67501f2b1c566de9116fe0841fe084173c8502c878
           imagePullPolicy: Always
           ports:
             - containerPort: 5050
