@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intercept
+  labels:
+    app: intercept
+    app.watchgrid.io/name: intercept
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: intercept
+  template:
+    metadata:
+      labels:
+        app: intercept
+        app.watchgrid.io/name: intercept
+        app.watchgrid.io/managed-by: watchgrid
+    spec:
+      hostNetwork: true
+      containers:
+        - name: intercept
+          image: smittix/intercept:latest
+          ports:
+            - containerPort: 5050
+              hostPort: 5050
+              protocol: TCP
+          env:
+            - name: SDR_DEVICE
+              value: "auto"
+            - name: ADMIN_USERNAME
+              value: "admin"
+            - name: ADMIN_PASSWORD
+              value: "admin"
+            - name: GPS_ENABLED
+              value: "false"
+            - name: GPSD_HOST
+              value: "localhost"
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+                - SYS_ADMIN
+          volumeMounts:
+            - name: usb-devices
+              mountPath: /dev/bus/usb
+            - name: data-storage
+              mountPath: /app/data
+            - name: config-storage
+              mountPath: /app/config
+      volumes:
+        - name: usb-devices
+          hostPath:
+            path: /dev/bus/usb
+            type: Directory
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: intercept-data-pvc
+        - name: config-storage
+          persistentVolumeClaim:
+            claimName: intercept-config-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: intercept-data-pvc
+  labels:
+    app: intercept
+    app.watchgrid.io/name: intercept
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: intercept-config-pvc
+  labels:
+    app: intercept
+    app.watchgrid.io/name: intercept
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: intercept
+  labels:
+    app: intercept
+    app.watchgrid.io/name: intercept
+    app.watchgrid.io/managed-by: watchgrid
+spec:
+  selector:
+    app: intercept
+  ports:
+    - name: web
+      port: 5050
+      targetPort: 5050
+      protocol: TCP
+  type: ClusterIP

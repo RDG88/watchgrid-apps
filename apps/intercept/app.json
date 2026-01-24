@@ -1,0 +1,54 @@
+{
+  "name": "iNTERCEPT",
+  "description": "Signal Intelligence Platform - A web-based interface for software-defined radio tools including pager decoding, aircraft tracking, vessel tracking, WiFi/Bluetooth scanning, and more.",
+  "version": "v2.10.0",
+  "namespace": "default",
+  "author": "smittix",
+  "tags": ["sdr", "rtlsdr", "signal-intelligence", "adsb", "ais", "pocsag", "wifi", "bluetooth", "surveillance"],
+  "requirements": {
+    "usb": "RTL-SDR or HackRF required for SDR features. WiFi adapter with monitor mode support recommended.",
+    "privileged": true,
+    "capabilities": ["NET_ADMIN", "NET_RAW"]
+  },
+  "config_fields": [
+    {
+      "name": "SDR_DEVICE",
+      "type": "string",
+      "description": "SDR device type (rtlsdr, hackrf, or auto)",
+      "default": "auto",
+      "required": false
+    },
+    {
+      "name": "ADMIN_USERNAME",
+      "type": "string",
+      "description": "Admin username for web interface",
+      "default": "admin",
+      "required": true
+    },
+    {
+      "name": "ADMIN_PASSWORD",
+      "type": "secret",
+      "description": "Admin password for web interface",
+      "default": "admin",
+      "required": true
+    },
+    {
+      "name": "GPS_ENABLED",
+      "type": "boolean",
+      "description": "Enable GPS support via gpsd",
+      "default": "false",
+      "required": false
+    },
+    {
+      "name": "GPSD_HOST",
+      "type": "string",
+      "description": "GPS daemon host (if GPS_ENABLED is true)",
+      "default": "localhost",
+      "required": false
+    }
+  ],
+  "ports": {
+    "web": 5050
+  },
+  "notes": "This application requires RTL-SDR or HackRF USB device for SDR features and WiFi adapter with monitor mode support for WiFi scanning. Access the web interface at http://<node-ip>:5050. Default credentials: admin/admin (change via config). Supports pager decoding (POCSAG/FLEX), 433MHz sensors, ADS-B aircraft tracking, AIS vessel tracking, ACARS messaging, WiFi/Bluetooth scanning, satellite tracking, and more. The app automatically detects connected SDR devices via SoapySDR."
+}
