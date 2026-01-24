@@ -21,7 +21,7 @@ spec:
       hostNetwork: true
       containers:
         - name: intercept
-          image: ghcr.io/YOUR_GITHUB_USERNAME/watchgrid-apps-intercept:latest
+          image: ghcr.io/rdg88/intercept:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5050

@@ -1,19 +1,21 @@
-name: Build and Push Docker Image
+name: Build and Push iNTERCEPT Docker Image
 
 on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
+    paths:
+      - 'apps/intercept/**'
   pull_request:
     branches:
       - main
+    paths:
+      - 'apps/intercept/**'
   workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository_owner }}/intercept
 
 jobs:
   build-and-push:
@@ -25,8 +27,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          submodules: true
+
+      - name: Clone intercept source
+        run: |
+          git clone --depth 1 https://github.com/smittix/intercept.git /tmp/intercept
+          cp -r /tmp/intercept/* apps/intercept/
+          ls -la apps/intercept/
 
       - name: Log in to the Container registry
         uses: docker/login-action@v3
@@ -54,7 +60,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: apps/intercept
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
