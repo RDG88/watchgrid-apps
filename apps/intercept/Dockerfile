@@ -55,6 +55,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cmake \
     libncurses-dev \
     libsndfile1-dev \
+    golang-go \
     # Build dump1090
     && cd /tmp \
     && git clone --depth 1 https://github.com/flightaware/dump1090.git \
@@ -81,6 +82,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && make \
     && cp AIS-catcher /usr/bin/AIS-catcher \
     && rm -rf /tmp/AIS-catcher \
+    # Build rtlamr (smart meter reader)
+    && cd /tmp \
+    && git clone --depth 1 https://github.com/bemasher/rtlamr.git \
+    && cd rtlamr \
+    && go build \
+    && cp rtlamr /usr/bin/rtlamr \
+    && rm -rf /tmp/rtlamr \
     # Cleanup build tools to reduce image size
     && apt-get remove -y \
         build-essential \
@@ -88,6 +96,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         cmake \
         libncurses-dev \
+        golang-go \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
