@@ -21,7 +21,7 @@ spec:
       hostNetwork: true
       containers:
         - name: intercept
-          image: ghcr.io/rdg88/intercept:latest
+          image: graafnet/intercept:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5050
