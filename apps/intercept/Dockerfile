@@ -30,9 +30,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bluetooth \
     # GPS support
     gpsd-clients \
+    # APRS decoder
+    direwolf \
+    # WiFi PMKID tools
+    hcxdumptool \
+    hcxtools \
+    # SoapySDR for multi-SDR support
+    soapysdr-tools \
+    soapysdr-module-hackrf \
+    soapysdr-module-lms7 \
+    limesuite \
+    hackrf \
     # Utilities
     curl \
     procps \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Build dump1090-fa and acarsdec from source (packages not available in slim repos)
@@ -60,6 +72,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && make \
     && cp acarsdec /usr/bin/acarsdec \
     && rm -rf /tmp/acarsdec \
+    # Build AIS-catcher
+    && cd /tmp \
+    && git clone --depth 1 https://github.com/jvde-github/AIS-catcher.git \
+    && cd AIS-catcher \
+    && mkdir build && cd build \
+    && cmake .. -DRTLSDR=ON \
+    && make \
+    && cp AIS-catcher /usr/bin/AIS-catcher \
+    && rm -rf /tmp/AIS-catcher \
     # Cleanup build tools to reduce image size
     && apt-get remove -y \
         build-essential \
